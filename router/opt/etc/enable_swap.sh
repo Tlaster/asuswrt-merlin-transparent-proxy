@@ -1,15 +1,15 @@
 #!/bin/sh
 
 if [ ! -f /tmp/mnt/sda1/myswap.swp ]; then
-    #create a 256MB swap file ("count" is in Kilobytes)
-    dd if=/dev/zero of=/tmp/mnt/sda1/myswap.swp bs=1k count=1048576
+    dd if=/dev/zero of=/tmp/mnt/sda1/myswap.swp bs=1M count=2048
 
-    #set up the swap file
     mkswap /tmp/mnt/sda1/myswap.swp
 fi
 
 #enable swap
 swapon /tmp/mnt/sda1/myswap.swp
+
+echo 10 > /proc/sys/vm/swappiness
 
 #check if swap is on
 free
