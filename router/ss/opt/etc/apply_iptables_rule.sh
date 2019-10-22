@@ -32,4 +32,14 @@ iptables -t nat -A PREROUTING -p tcp -j PROXY_TCP
 # 对路由器进行透明代理.
 iptables -t nat -A OUTPUT -p tcp -j PROXY_TCP
 
+# UDP rule
+ip rule add fwmark 0x2333/0x2333 pref 100 table 100
+ip route add local default dev lo table 100
+
+iptables -t mangle -N PROXY_UDP
+iptables -t mangle -A PROXY_UDP -p udp -m set --match-set CHINAIPS dst -j RETURN
+iptables -t mangle -A PROXY_UDP -p udp -m set --match-set CHINAIP dst -j RETURN
+iptables -t mangle -A PROXY_UDP -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x2333/0x2333
+iptables -t mangle -A PREROUTING -p udp -j PROXY_UDP
+
 echo '[0m[33mApply iptables rule done.[0m'
